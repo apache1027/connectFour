@@ -1,6 +1,7 @@
 class Board(object):
     def __init__(self):
         #self explanatory fields and intilize board
+        #this is a test commment
         self.board = []
         self.player = 'R'
         self.height = 6
