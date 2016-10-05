@@ -21,41 +21,44 @@ class Board(object):
         print '\n'
 
     #Takes the current player tile and searches the board for 4 in a row
-    def victory_test(self, cur_name):
+    def victory_test(self, cur_name, cur_title):
         #check horizontal
         for x in range (self.height):
             for y in range (self.width - 3):
                 if self.board[x][y] == cur_name and self.board[x][y+1] == cur_name and self.board[x][y+2] == cur_name and self.board[x][y+3] == cur_name:
                     self.print_board()
-                    print '\n' ,cur_name, "player wins!"
+                    print cur_title, "player wins!"
                     return True
         #check vertical
         for x in range (self.height - 3):
             for y in range (self.width):
                 if self.board[x][y] == cur_name and self.board[x + 1][y] == cur_name and self.board[x + 2][y] == cur_name and self.board[x + 3][y] == cur_name:
                     self.print_board()
-                    print '\n' ,cur_name, "player wins!"
+                    print cur_title, "player wins!"
                     return True
         #check forward diagonal \
-                for x in range (self.height - 3):
-                    for y in range (self.width - 3):
-                        if self.board[x][y] == cur_name and self.board[x + 1][y + 1] == cur_name and self.board[x + 2][y + 2] == cur_name and self.board[x + 3][y + 3] == cur_name:
-                            self.print_board()
-                    print '\n' ,cur_name, "player wins!"
+        for x in range (self.height - 3):
+            for y in range (self.width - 3):
+                if self.board[x][y] == cur_name and self.board[x + 1][y + 1] == cur_name and self.board[x + 2][y + 2] == cur_name and self.board[x + 3][y + 3] == cur_name:
+                    self.print_board()
+                    print cur_title, "player wins!"
                     return True
         #check back diagonal /
-        print '\n'
         for x in range (self.height - 3):
             for y in range (3, self.width):
                 if self.board[x][y] == cur_name and self.board[x + 1][y - 1] == cur_name and self.board[x + 2][y - 2] == cur_name and self.board[x + 3][y - 3] == cur_name:
                     self.print_board()
-                    print '\n' ,cur_name, "player wins!"
+                    print cur_title, "player wins!"
                     return True
-
         return False
 
-    #check board for tie
+    #return true if board is full
     def tie_test(self):
+        for x in self.cur_row:
+            if(x > -1):
+                return False
+        self.print_board()
+        print "It's a tie!"
         return True
 
     #update the board
@@ -83,12 +86,12 @@ def human_turn(board, human, human_name):
     while(not check_move(user_move)):
         user_move = raw_input("%s player, enter a number between 1 and %d: " %(human_name, board.width))
     user_move = int(user_move)
-    user_move -= 1
-    board.update_board(human, user_move)
+    board.update_board(human, user_move-1)
 
 
 board = Board()
 turn = 'R'
+turn_name = "Red"
 cont = True
 #get user input for who goes first
 #set human and computer to respective value
@@ -98,13 +101,9 @@ while (temp != 'c' and temp != 'h'):
 if(temp == 'c'):
     computer = 'R'
     human = 'B'
-    human_name = "Black"
-    computer_name = "Red"
 else:
     computer = 'B'
     human = 'R'
-    human_name = "Red"
-    computer_name = "Black"
 test = True
 while(test):
     temp = raw_input("Enter the search depth: ")
@@ -120,13 +119,15 @@ depth = temp
 #loop until there is a winner
 while (cont):
     if(turn == computer):
-        comp_turn(board, computer, computer_name)
+        human_turn(board, turn, turn_name)
     else:
-        human_turn(board, human, human_name)
-    if(board.victory_test(turn)):
+        human_turn(board, turn, turn_name)
+    if(board.victory_test(turn, turn_name)):
         cont = False
     if(turn == 'B'):
         turn = 'R'
+        turn_name = "Red"
     else:
         turn = 'B'
+        turn_name = "Black"
 
