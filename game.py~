@@ -9,9 +9,9 @@ class Node(object):
         self.is_root = is_root
         self.move = move
         if(self.board.victory_test(self.player)):
-            self.value = turn * 512 
+            self.value = turn * 1000 
         else:
-            self.value = board.board_eval(self.player, self.turn)
+            self.value = 0
         self.children = []
 
     def create_children(self):
@@ -43,7 +43,7 @@ class Node(object):
         if (self.depth == 0):
             return self.value
         if(len(self.children) == 0):
-            if(self.value != 512 * self.turn):
+            if(self.value == 0):
                 self.create_children()
             else:
                 return self.value
@@ -114,75 +114,36 @@ class Board(object):
 
 
 
-    def board_eval(self, cur_name, turn):
+    def board_eval(self, cur_name):
         score = 0
         #check horizontal
         for x in range (self.height):
             for y in range (self.width - 3):
                 temp = []
                 temp.append(self.board[x][y])
-                temp.append(self.board[x][y+1])
-                temp.append(self.board[x][y+2])
-                temp.append(self.board[x][y+3])
-                score += self.eval_helper(temp, cur_name, turn)               
+                temp.append()
+                temp.append()
+                temp.append()
+                if self.board[x][y] == cur_name and self.board[x][y+1] == cur_name and self.board[x][y+2] == cur_name and self.board[x][y+3] == cur_name:
+
+                    
         #check vertical
         for x in range (self.height - 3):
             for y in range (self.width):
- 		temp = []
-                temp.append(self.board[x][y])
-                temp.append(self.board[x+1][y])
-                temp.append(self.board[x+2][y])
-                temp.append(self.board[x+3][y])
-		score += self.eval_helper(temp, cur_name, turn)
-                
+                if self.board[x][y] == cur_name and self.board[x + 1][y] == cur_name and self.board[x + 2][y] == cur_name and self.board[x + 3][y] == cur_name:
         #check forward diagonal \
         for x in range (self.height - 3):
             for y in range (self.width - 3):
- 		temp = []
-                temp.append(self.board[x][y])
-                temp.append(self.board[x+1][y+1])
-                temp.append(self.board[x+2][y+1])
-                temp.append(self.board[x+3][y+1])
-		score += self.eval_helper(temp, cur_name, turn)
-                
+                if self.board[x][y] == cur_name and self.board[x + 1][y + 1] == cur_name and self.board[x + 2][y + 2] == cur_name and self.board[x + 3][y + 3] == cur_name:
         #check back diagonal /
         for x in range (self.height - 3):
             for y in range (3, self.width):
- 		temp = []
-                temp.append(self.board[x][y])
-                temp.append(self.board[x+1][y-1])
-                temp.append(self.board[x+2][y-2])
-                temp.append(self.board[x+3][y-3])
-		score += self.eval_helper(temp, cur_name, turn)
-        return score
-                
-    def eval_helper(self, data, cur_name, turn):
-	min_count = 0
-	max_count = 0
+                if self.board[x][y] == cur_name and self.board[x + 1][y - 1] == cur_name and self.board[x + 2][y - 2] == cur_name and self.board[x + 3][y - 3] == cur_name:
+                    return
+    def eval_helper(data, cur_name):
         if(len(data) == 0):
             return 0
-        for x in data:
-            if(x == cur_name):
-                max_count += 1
-            elif(x != '*'):
-                min_count += 1
-        if(max_count == 0):
-            if(min_count == 3):
-                return -50 * turn 
-            elif(min_count == 2):
-                return -10 * turn 
-            elif(min_count == 1):
-                return -1 * turn 
-            else:
-                return 0
-        elif(min_count == 0):
-            if(max_count == 3):
-                return 50 * turn
-            if(max_count == 2):
-                return 10 * turn
-            if (max_count == 1):
-                return 1 * turn
-        return 0
+        elif()
 
     #return true if board is full
     def tie_test(self):
@@ -224,29 +185,42 @@ def check_move(user_move):
 #human turn
 def human_turn(board, human, human_name):
     board.print_board()
+    
     user_move = raw_input("%s player, enter a number between 1 and %d: " %(human_name, board.width))
     while(not check_move(user_move)):
         user_move = raw_input("%s player, enter a number between 1 and %d: " %(human_name, board.width))
     user_move = int(user_move)
+    
     #user_move = randint(1,7)
+    print "Human chose column %d<---------------------------------------------------------------------------------" %user_move
     board.update_board(human, user_move-1)
 
 #human turn
-def computer_turn(board, human, human_name, depth):
+def computer_turn(board, human, human_name):
     board.print_board()
-    root = Node(depth, human, board, 1, 0, True)
-    move = -1
+    root = Node(7, human, board, 1, 0, True)
+    """
+    user_move = raw_input("%s player, enter a number between 1 and %d: " %(human_name, board.width))
+    while(not check_move(user_move)):
+        user_move = raw_input("%s player, enter a number between 1 and %d: " %(human_name, board.width))
+    user_move = int(user_move)
+    board.update_board(human, user_move-1)
+    """
     val = root.alphabeta(-1000000, 1000000, human)
+    print "val = %d"%val
+    for child in root.children:
+        print child.value
     for child in root.children:
         if(child.value == val):
+            print "move from child val = %d" %child.value
             move = child.move
             break
-    #if(move == -1 or val == 0):
-        #while(not check_move(move)):
-            #move = randint(0,6)
+    if(move == -1 or val == 0):
+        while(not check_move(move)):
+            move = randint(0,6)
     board.update_board(human, move)
     move+=1
-    print "Computer chose column %d" %move
+    print "Computer chose column %d<---------------------------------------------------------------------------------" %move
 
 board = Board()
 turn = 'R'
@@ -254,15 +228,19 @@ turn_name = "Red"
 cont = True
 #get user input for who goes first
 #set human and computer to respective value
+"""
 temp = 'a'
 while (temp != 'c' and temp != 'h'):
     temp = raw_input("Will the (c)omputer or the (h)uman go first?: ")
+    """
+temp = 'c'
 if(temp == 'c'):
     computer = 'R'
     human = 'B'
 else:
     computer = 'B'
     human = 'R'
+"""
 test = True
 while(test):
     temp = raw_input("Enter the search depth: ")
@@ -274,14 +252,14 @@ while(test):
         temp = int(temp)
         test = False
 depth = temp
-
+"""
+depth = 4
 
 #loop until there is a winner
 while (cont):
     if(turn == computer):
-        computer_turn(board, turn, turn_name, depth)
+        computer_turn(board, turn, turn_name)
     else:
-        #computer_turn(board, turn, turn_name, depth)
         human_turn(board, turn, turn_name)
     if(board.victory_test(turn)):
         cont = False
