@@ -1,3 +1,6 @@
+class Node(object):
+    def __init__(self):
+        
 class Board(object):
     def __init__(self):
         #self explanatory fields and intilize board
@@ -65,6 +68,16 @@ class Board(object):
     def update_board(self, val, move):
         self.board[self.cur_row[move]][move] = val
         self.cur_row[move] = self.cur_row[move]-1
+
+    #returns list of possible moves (standard game would be int 0-6)
+    def possible_moves(self):
+        temp = []
+        counter = 0
+        for x in self.cur_row:
+            if (x > -1):
+                temp.append(counter)
+            counter += 1
+        return temp
 
 #will make sure the user inputs a valid move
 def check_move(user_move):
