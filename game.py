@@ -1,4 +1,5 @@
 import copy
+import time
 from random import randint
 class Node(object):
     def __init__(self, depth, player, board, turn, move, is_root):
@@ -32,6 +33,13 @@ class Node(object):
                     temp_player = self.player
                 temp_board.update_board(temp_player, move)
                 self.children.append(Node(temp_depth, temp_player, temp_board, temp_turn, temp_move, False))
+
+            #sort children for min and max nodes to speed up alpha beta
+            if(self.turn == -1):
+                self.children.sort(key = lambda x: x.value)
+            else:
+                self.children.sort(key = lambda x: x.value, reverse=True)
+
 
     def test_print(self):
         print "++++++++++++++++++++++++++++++++++++++++\n"
@@ -234,9 +242,15 @@ def human_turn(board, human, human_name):
 #human turn
 def computer_turn(board, human, human_name, depth):
     board.print_board()
+    time1 = time.time()
     root = Node(depth, human, board, 1, 0, True)
+    time2 = time.time()
+    print "Building tree took %0.3f ms" %((time2 - time1) * 1000)
     move = -1
+    time3 = time.time()
     val = root.alphabeta(-1000000, 1000000, human)
+    time4 = time.time()
+    print "Search took %0.3f s" %((time3 - time4) * -1)
     for child in root.children:
         if(child.value == val):
             move = child.move
