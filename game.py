@@ -124,7 +124,7 @@ class Board(object):
 
 
 
-    def board_eval(self, cur_name, turn):
+    def board_eval(self, maxp, minp):
         score = 0
         #check horizontal
         for x in range (self.height):
@@ -134,7 +134,7 @@ class Board(object):
                 temp.append(self.board[x][y+1])
                 temp.append(self.board[x][y+2])
                 temp.append(self.board[x][y+3])
-                score += self.eval_helper(temp, cur_name, turn)               
+                score += self.eval_helper(temp, maxp, minp)               
         #check vertical
         for x in range (self.height - 3):
             for y in range (self.width):
@@ -143,7 +143,7 @@ class Board(object):
                 temp.append(self.board[x+1][y])
                 temp.append(self.board[x+2][y])
                 temp.append(self.board[x+3][y])
-		score += self.eval_helper(temp, cur_name, turn)
+		score += self.eval_helper(temp, maxp, minp)
                 
         #check forward diagonal \
         for x in range (self.height - 3):
@@ -153,7 +153,7 @@ class Board(object):
                 temp.append(self.board[x+1][y+1])
                 temp.append(self.board[x+2][y+1])
                 temp.append(self.board[x+3][y+1])
-		score += self.eval_helper(temp, cur_name, turn)
+		score += self.eval_helper(temp, maxp, minp)
                 
         #check back diagonal /
         for x in range (self.height - 3):
@@ -163,35 +163,35 @@ class Board(object):
                 temp.append(self.board[x+1][y-1])
                 temp.append(self.board[x+2][y-2])
                 temp.append(self.board[x+3][y-3])
-		score += self.eval_helper(temp, cur_name, turn)
+		score += self.eval_helper(temp, maxp, minp)
         return score
                 
-    def eval_helper(self, data, cur_name, turn):
+    def eval_helper(self, data, maxp, minp):
 	min_count = 0
 	max_count = 0
         if(len(data) == 0):
             return 0
         for x in data:
-            if(x == cur_name):
+            if(x == maxp):
                 max_count += 1
             elif(x != '*'):
                 min_count += 1
         if(max_count == 0):
             if(min_count == 3):
-                return -50 * turn 
+                return -50 
             elif(min_count == 2):
-                return -10 * turn 
+                return -10 
             elif(min_count == 1):
-                return -1 * turn 
+                return -1  
             else:
                 return 0
         elif(min_count == 0):
             if(max_count == 3):
-                return 50 * turn
+                return 50
             if(max_count == 2):
-                return 10 * turn
+                return 10
             if (max_count == 1):
-                return 1 * turn
+                return 1
         return 0
 
     #return true if board is full
@@ -241,19 +241,23 @@ def human_turn(board, human, human_name):
     #user_move = randint(1,7)
     board.update_board(human, user_move-1)
 def printyy(node):
-    node.test_print()
+    node.test_print2()
     for child in node.children:
         printyy(child)
 #human turn
 def computer_turn(board, human, human_name, depth):
     board.print_board()
     time1 = time.time()
-    root = Node(board, depth, 1, human, 0, 0)
+    if (human == 'R'):
+        oth = 'B'
+    else:
+        oth = 'R'
+    root = Node(board, depth, human, 0, 0, human, oth)
     move = -1
     val = root.alphabeta(-1000000, 1000000, human)
     time4 = time.time()
     print "Search took %0.3f s" %(time4 - time1)
-    printyy(root)
+    #printyy(root)
     for child in root.children:
         if(child.value == val):
             move = child.move
@@ -298,8 +302,8 @@ while (cont):
     if(turn == computer):
         computer_turn(board, turn, turn_name, depth)
     else:
-        #computer_turn(board, turn, turn_name, depth)
-        human_turn(board, turn, turn_name)
+        computer_turn(board, turn, turn_name, depth)
+        #human_turn(board, turn, turn_name)
     if(board.victory_test(turn)):
         cont = False
         board.print_board()
