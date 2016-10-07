@@ -132,4 +132,3 @@ class Node(object):
 
     def test_print2(self):
         print "%d\t%s\t%d\t%d"%(self.depth, self.player, self.move, self.value)
-

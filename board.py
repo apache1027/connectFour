@@ -33,22 +33,26 @@ class Board(object):
         for x in range(self.width):
             self.cur_row.append(self.height - 1)
 
-    #prints board nice and pretty
     def print_board(self):
-        """Prints the current board state nice and pretty.
-        
-        
-        """
+        """Prints the current board state nice and pretty."""
         for row in self.board:
             print " ".join(row)
         for i in range(1, self.width + 1):
             print i,
         print '\n'
 
-    #Takes the current player tile and searches the board for 4 in a row
     def victory_test(self, cur_name):
         """Checks if the current player won the game.
         
+        Iterates through all combinations of 4 consecutive board positions and checks if
+        the current player inhabits all four. Returns true if player wins and false if not.
+
+        Arg:
+            cur_name(char): 'R' or 'B' depending on player.
+
+        Return:
+            True: If player has four in a row.
+            Fales: If player does not have 4 in a row.
         
         """
         #check horizontal
@@ -78,6 +82,16 @@ class Board(object):
     def board_eval(self, maxp, minp):
         """Calculates a score based on board state.
         
+        For each section of 4 board positions in a row, their contents (either
+        'B', 'R', or '*') are added to a list. This list is passed to eval_helper()
+        to recieve a score and the total is returned.
+
+        Args:
+            maxp(char): The char representing the maximizing player.
+            minp(char): The char representing the minimizing player.
+
+        Return:
+            score(int): The score that is assigned to the current board state.
         
         """
         score = 0
@@ -106,8 +120,8 @@ class Board(object):
  		temp = []
                 temp.append(self.board[x][y])
                 temp.append(self.board[x+1][y+1])
-                temp.append(self.board[x+2][y+1])
-                temp.append(self.board[x+3][y+1])
+                temp.append(self.board[x+2][y+2])
+                temp.append(self.board[x+3][y+3])
 		score += self.eval_helper(temp, maxp, minp)
                 
         #check back diagonal /
@@ -124,6 +138,21 @@ class Board(object):
     def eval_helper(self, data, maxp, minp):
         """Uses list from board_eval() to assign score.
         
+        Calculates the score that each group of four board position in a row recieves. 
+            3 of a kind and a blank = 50
+            2 of a kind and a 2 spaces = 10
+            1 of a kind and a 3 spaces = 1
+            mix of both pieces = 0
+        The maximizing player gets positive scores and the minimizing player gets
+        negative scores.
+
+        Args:
+            data[char]: List of contents of the current board position
+            maxp(char): Maximizing player
+            minp(char): Minimizing player
+
+        Return:
+            int: score based on eval heuristic listed above
         
         """
 	min_count = 0
@@ -153,12 +182,8 @@ class Board(object):
                 return 1
         return 0
 
-    #return true if board is full
     def tie_test(self):
-        """Checks for a full board.
-        
-        
-        """
+        """Checks for a full board."""
         for x in self.cur_row:
             if(x > -1):
                 return False
@@ -166,20 +191,17 @@ class Board(object):
         print "It's a tie!"
         return True
 
-    #update the board
     def update_board(self, val, move):
-        """Updates the board with a move.
-        
-        
-        """
+        """Updates the board with a move."""
         self.board[self.cur_row[move]][move] = val
         self.cur_row[move] = self.cur_row[move]-1
 
-    #returns list of possible moves (standard game would be int 0-6)
     def possible_moves(self):
-        """Calculates all possible moves.
+        """Calculates all possible moves.i
         
-        
+        If the value of cur_row[x] is not negative then that column
+        is a possible move.
+
         """
         temp = []
         counter = 0
@@ -188,4 +210,3 @@ class Board(object):
                 temp.append(counter)
             counter += 1
         return temp
-
