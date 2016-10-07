@@ -1,6 +1,8 @@
-import copy
 import time
+from node import Node
 from random import randint
+import copy
+"""
 class Node(object):
     def __init__(self, depth, player, board, turn, move, is_root):
         self.depth = depth
@@ -73,7 +75,7 @@ class Node(object):
                     break
             self.value = v
             return v
-
+"""
 class Board(object):
     def __init__(self):
         #self explanatory fields and intilize board
@@ -238,19 +240,20 @@ def human_turn(board, human, human_name):
     user_move = int(user_move)
     #user_move = randint(1,7)
     board.update_board(human, user_move-1)
-
+def printyy(node):
+    node.test_print()
+    for child in node.children:
+        printyy(child)
 #human turn
 def computer_turn(board, human, human_name, depth):
     board.print_board()
     time1 = time.time()
-    root = Node(depth, human, board, 1, 0, True)
-    time2 = time.time()
-    print "Building tree took %0.3f ms" %((time2 - time1) * 1000)
+    root = Node(board, depth, 1, human, 0, 0)
     move = -1
-    time3 = time.time()
     val = root.alphabeta(-1000000, 1000000, human)
     time4 = time.time()
-    print "Search took %0.3f s" %((time3 - time4) * -1)
+    print "Search took %0.3f s" %(time4 - time1)
+    printyy(root)
     for child in root.children:
         if(child.value == val):
             move = child.move
