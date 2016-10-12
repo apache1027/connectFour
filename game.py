@@ -6,7 +6,7 @@ from node import Node
 def check_move(user_move):
     """Checks a move to make sure it's valid.
     
-    Ensures that the move is and int and that it is valid with the
+    Ensures that the move is an int and that it is valid with the
     current board. 
     
     Args:
