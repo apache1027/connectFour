@@ -60,7 +60,7 @@ def computer_turn(board, comp, t_limit):
         depth(int): The depth that the search algorithm will run to
     
     """
-    depth = 0
+    depth = 7
     move = -1
     board.print_board()
     time1 = time.time()
@@ -69,15 +69,18 @@ def computer_turn(board, comp, t_limit):
     else:
         oth = 'R'
     while((time.time() - time1) <= t_limit):
-        depth += 1
+        #depth += 1
         root = Node(board, depth, comp, 0, 0, comp, oth)
         val = root.alphabeta(-1000000, 1000000, comp, time1, t_limit)
         if(val != None):
             for child in root.children:
                 if(child.value == val):
                     move = child.move
+                    print "next move will be %d at depth %d" %(move, depth)
+                    break
         else:
-            depth -= 1
+            #depth -= 1
+            i = None
     print "Search took %0.3f s" %(time.time() - time1)
     print "Searched to a depth of %d" %depth
     #printyy(root)
