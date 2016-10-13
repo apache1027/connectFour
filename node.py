@@ -83,7 +83,7 @@ class Node(object):
         else:
             self.children.sort(key = lambda x: x.value, reverse = True)
 
-    def alphabeta(self, a, b, max_player, time1, time_limit):
+    def alphabeta(self, a, b, max_player, time1, t_limit):
         """Uses alpha beta pruning to find the best next move for max player.
         
         Standard alphabeta algorithm. The function builds the tree by generating child nodes
@@ -99,7 +99,7 @@ class Node(object):
             value(int): The best choice value for the current player to choose
             
         """
-        if((time.time() - time1) >= time_limit):
+        if((time.time() - time1) >= t_limit):
             return None
         if (self.depth == 0):
             return self.value
@@ -111,7 +111,7 @@ class Node(object):
         if(self.player == max_player):
             v = -1000000
             for child in self.children:
-                v = max(v, child.alphabeta(a, b, max_player, time1))
+                v = max(v, child.alphabeta(a, b, max_player, time1, t_limit))
                 a = max(a,v)
                 if b <= a:
                     break
@@ -120,7 +120,7 @@ class Node(object):
         else:
             v = 1000000
             for child in self.children:
-                v = min(v, child.alphabeta(a, b, max_player, time1))
+                v = min(v, child.alphabeta(a, b, max_player, time1, t_limit))
                 b = min(b, v)
                 if(b <= a):
                     break
