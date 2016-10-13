@@ -46,7 +46,7 @@ def human_turn(board, human, human_name):
 
 
 
-def computer_turn(board, comp, depth):
+def computer_turn(board, comp, time):
     """Makes comuter move.
     
     Calculates the best move for the computer and updates the board. Also
@@ -60,17 +60,20 @@ def computer_turn(board, comp, depth):
         depth(int): The depth that the search algorithm will run to
     
     """
+    depth = 0
+    move = -1
     board.print_board()
     time1 = time.time()
     if (comp == 'R'):
         oth = 'B'
     else:
         oth = 'R'
-    root = Node(board, depth, comp, 0, 0, comp, oth)
-    move = -1
-    val = root.alphabeta(-1000000, 1000000, comp)
-    time4 = time.time()
-    print "Search took %0.3f s" %(time4 - time1)
+    while(True):
+        depth += 1
+        root = Node(board, depth, comp, 0, 0, comp, oth)
+        val = root.alphabeta(-1000000, 1000000, comp, time1, time)
+    time2 = time.time()
+    print "Search took %0.3f s" %(time2 - time1)
     #printyy(root)
     for child in root.children:
         if(child.value == val):
