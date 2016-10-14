@@ -113,6 +113,8 @@ class Node(object):
             for child in self.children:
                 v = max(v, child.alphabeta(a, b, max_player, time1, t_limit))
                 a = max(a,v)
+                if((time.time() - time1) >= t_limit):
+                    return None
                 if b <= a:
                     break
             self.value = v
@@ -122,6 +124,8 @@ class Node(object):
             for child in self.children:
                 v = min(v, child.alphabeta(a, b, max_player, time1, t_limit))
                 b = min(b, v)
+                if((time.time() - time1) >= t_limit):
+                    return None
                 if(b <= a):
                     break
             self.value = v
