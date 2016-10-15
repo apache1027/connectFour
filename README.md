@@ -8,7 +8,8 @@ python game.py
 
 Enter 'h' for human first or 'c' for computer first.
 
-Enter an int for search depth. 7 will allow the AI to decide in under 3 sec.
+Enter an int for a time limit. Alpha beta will run with iteritive deepening
+until the time limit is reached. 
 
 Enter the column number (1-7) when it is your turn. 
 
